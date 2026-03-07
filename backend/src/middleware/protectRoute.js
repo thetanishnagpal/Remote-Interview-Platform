@@ -5,12 +5,12 @@ export const protectRoute = [
     requireAuth(),
     async (req, res, next) => {
         try {
-            const userId = req.auth().userId;
-            
+            const clerkId = req.auth().userId;
+
             if(!clerkId) return res.status(401).json({ message: "Unauthorized - invalid token" });
-            
+
             // find the user in the database using the clerkId
-            const user = await User.findOne({ clerkId});
+            const user = await User.findOne({ clerkId });
 
             if(!user) return res.status(404).json({ message: "Unauthorized - user not found" });
 
