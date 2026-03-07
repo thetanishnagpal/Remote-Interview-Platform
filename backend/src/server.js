@@ -16,6 +16,7 @@ dotenv.config();
 
 const app = express();
 
+app.use(clerkMiddleware()); // this adds auth failed to req object: req.auth();
 //middleware
 app.use(express.json());
 // credentials: true allows cookies to be sent in cross-origin requests, which is necessary for authentication and session management when the frontend and backend are on different domains or ports.
@@ -25,7 +26,6 @@ app.use(
     credentials: true,
   })
 );
-app.use(clerkMiddleware()); // this adds auth failed to req object: req.auth();
 
 app.use("/api/inngest", serve({client: inngest, functions}));
 app.use("/api/webhooks", clerkWebhook);
