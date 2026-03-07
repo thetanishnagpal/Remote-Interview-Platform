@@ -21,10 +21,7 @@ app.use(express.json());
 // credentials: true allows cookies to be sent in cross-origin requests, which is necessary for authentication and session management when the frontend and backend are on different domains or ports.
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://remote-interview-platform-1-xh21.onrender.com",
-    ],
+    origin: true,
     credentials: true,
   })
 );
