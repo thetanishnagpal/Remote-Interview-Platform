@@ -57,7 +57,7 @@ app.get("/health", (req, res) => {
 
 
 // // SERVE FRONTEND (CORRECT FOR MONOREPO)
-const clientDistPath = path.resolve("..", "frontend", "dist");
+const clientDistPath = path.resolve(process.cwd(), "../frontend/dist");
 app.use(express.static(clientDistPath));
 
 
