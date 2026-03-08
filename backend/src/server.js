@@ -56,17 +56,6 @@ app.get("/health", (req, res) => {
 });
 
 
-// // SERVE FRONTEND (CORRECT FOR MONOREPO)
-const clientDistPath = path.resolve(process.cwd(), "../frontend/dist");
-app.use(express.static(clientDistPath));
-
-
-// //SPA fallback route to serve index.html for any unmatched routes (for client-side routing)
-app.use((req, res) => {
-  res.sendFile(path.resolve(clientDistPath, "index.html"));
-});
-
-
 
 // Start the server after connecting to the database
 const startServer = async () => {
