@@ -1,73 +1,68 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
+import dotenv from "dotenv";
 import { serve } from "inngest/express";
-import clerkWebhook from "./routes/clerkWebhook.js";
 import { clerkMiddleware } from '@clerk/express';
 
-import dotenv from "dotenv";
 import { connectDB } from "./lib/db.js";
 import { inngest, functions } from "./lib/inngest.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
+import clerkWebhook from "./routes/clerkWebhook.js";
 
 dotenv.config();
 
-
 const app = express();
 
-app.use(clerkMiddleware()); // this adds auth failed to req object: req.auth();
-//middleware
+// 1. Clerk Middleware (Adds auth data to the req object)
+app.use(clerkMiddleware());
+
+// 2. Body Parser
 app.use(express.json());
-// credentials: true allows cookies to be sent in cross-origin requests, which is necessary for authentication and session management when the frontend and backend are on different domains or ports.
+
+// 3. Hardened CORS Configuration
+// Required for authentication headers to pass between different Render domains
 app.use(
   cors({
-    origin: true,
+    origin: "https://remote-interview-platform-1-xh21.onrender.com", // Your specific frontend URL
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.use("/api/inngest", serve({client: inngest, functions}));
-app.use("/api/webhooks", clerkWebhook);
+// 4. API Routes
+app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/webhooks", clerkWebhook); // Handles Clerk user sync logic
 app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoutes);
 
-
-app.post("/api/webhooks/clerk", async (req, res) => {
-  try {
-    const evt = req.body;
-
-    await inngest.send({
-      name: evt.type,
-      data: evt.data,
-    });
-
-    res.status(200).send("ok");
-  } catch (e) {
-    console.error(e);
-    res.status(500).send("error");
-  }
+// 5. Basic Health & Root Routes
+app.get("/", (req, res) => {
+  res.send("InterCode Backend API is Live! 🚀");
 });
 
-
-// API routes
 app.get("/health", (req, res) => {
-  res.json({ message: "api is up and running" });
+  res.json({ 
+    status: "healthy", 
+    message: "API is up and running",
+    timestamp: new Date().toISOString()
+  });
 });
 
-
-
-// Start the server after connecting to the database
+// 6. Database Connection & Server Start
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(process.env.PORT || 8080, () => {
-      console.log("Server is running on port:", process.env.PORT || 8080); 
-});
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`✅ Server is running on port: ${PORT}`);
+    });
   } catch (error) {
-    console.error("💥 Failed to start server:", error)
+    console.error("💥 Failed to start server:", error.message);
+    process.exit(1); // Exit if DB connection fails
   }
 };
-
 
 startServer();
