@@ -29,9 +29,9 @@ export async function createSession(req, res) {
             name: `${problem} Session`,
             created_by_id: clerkId,
             members: [clerkId]
-        })
+        });
         
-        await channel.create();
+        await chatChannel.create();
         
         res.status(201).json({ message: "Session created successfully", session});
     } catch (error) {
@@ -61,7 +61,7 @@ export async function getMyRecentSessions(req, res) {
         //get sessions where user is either host or participant
         const sessions = await Session.find({
             status:"completed",
-            $or: [{host: userId}, {participants: userId}]
+            $or: [{host: userId}, {participant: userId}]
         })
         .sort({ createdAt: -1 })
         .limit(20);
@@ -75,7 +75,7 @@ export async function getMyRecentSessions(req, res) {
 
 export async function getSessionById(req, res) {
     try {
-        const {id} = req.parms;
+        const {id} = req.params;
 
         const session = await Session.findById(id)
         .populate("host", "name profileImage email clerkId")
