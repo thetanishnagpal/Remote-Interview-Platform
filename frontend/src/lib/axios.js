@@ -1,25 +1,21 @@
 import axios from "axios";
 
-const rawBaseURL = import.meta.env.VITE_API_URL || "";
-
-// Force the baseURL to end with /api/
-const baseURL = rawBaseURL.endsWith("/") 
-  ? rawBaseURL 
-  : `${rawBaseURL}/`;
-
 const axiosInstance = axios.create({
-  baseURL: baseURL,
+  baseURL: import.meta.env.VITE_API_URL.endsWith("/")
+    ? import.meta.env.VITE_API_URL
+    : `${import.meta.env.VITE_API_URL}/`,
   withCredentials: true,
 });
 
-// ADD THIS INTERCEPTOR - This will force-fix the URL before it leaves
-axiosInstance.interceptors.request.use((config) => {
-  // If the URL starts with a slash, remove it to make it relative to baseURL
-  if (config.url.startsWith("/")) {
-    config.url = config.url.substring(1);
-  }
-  console.log("🚀 FINAL OUTGOING URL:", config.baseURL + config.url);
-  return config;
-});
+// This function will be called once in App.jsx
+export const setupAxiosInterceptors = (getToken) => {
+  axiosInstance.interceptors.request.use(async (config) => {
+    const token = await getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  }, (error) => Promise.reject(error));
+};
 
 export default axiosInstance;
