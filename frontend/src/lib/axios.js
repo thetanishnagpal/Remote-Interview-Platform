@@ -1,18 +1,25 @@
 import axios from "axios";
 
-const rawBaseURL = import.meta.env.VITE_API_URL;
-console.log("Raw API URL from Env:", rawBaseURL);
+const rawBaseURL = import.meta.env.VITE_API_URL || "";
 
-// This ensures that even if you forgot the slash in Render settings, 
-// the code adds it so 'sessions' becomes '/api/sessions' and not '/apisessions'
-const baseURL = rawBaseURL ? (rawBaseURL.endsWith("/") ? rawBaseURL : `${rawBaseURL}/`) : "";
+// Force the baseURL to end with /api/
+const baseURL = rawBaseURL.endsWith("/") 
+  ? rawBaseURL 
+  : `${rawBaseURL}/`;
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
   withCredentials: true,
 });
 
-// Extra safety: Log the final baseURL being used by axios
-console.log("Axios Final BaseURL:", axiosInstance.defaults.baseURL);
+// ADD THIS INTERCEPTOR - This will force-fix the URL before it leaves
+axiosInstance.interceptors.request.use((config) => {
+  // If the URL starts with a slash, remove it to make it relative to baseURL
+  if (config.url.startsWith("/")) {
+    config.url = config.url.substring(1);
+  }
+  console.log("🚀 FINAL OUTGOING URL:", config.baseURL + config.url);
+  return config;
+});
 
 export default axiosInstance;
