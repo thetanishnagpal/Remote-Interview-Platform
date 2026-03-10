@@ -2,7 +2,7 @@ import {
   ArrowRightIcon,
   Code2Icon,
   CrownIcon,
-  SparklesIcon,
+  Codesandbox,
   UsersIcon,
   ZapIcon,
   LoaderIcon,
@@ -95,7 +95,7 @@ function ActiveSessions({ sessions, isLoading, isUserInSession }) {
           ) : (
             <div className="text-center py-16">
               <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl flex items-center justify-center">
-                <SparklesIcon className="w-10 h-10 text-primary/50" />
+                <Codesandbox className="w-10 h-10 text-primary/50" />
               </div>
               <p className="text-lg font-semibold opacity-70 mb-1">No active sessions</p>
               <p className="text-sm opacity-50">Be the first to create one!</p>
