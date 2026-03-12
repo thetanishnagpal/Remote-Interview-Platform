@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
+import axios from "axios"; 
 import { serve } from "inngest/express";
 import { clerkMiddleware } from '@clerk/express';
 
@@ -15,30 +16,74 @@ dotenv.config();
 
 const app = express();
 
-// 1. Clerk Middleware (Adds auth data to the req object)
+// 1. Clerk Middleware
 app.use(clerkMiddleware());
 
 // 2. Body Parser
 app.use(express.json());
 
+
+console.log("Current Token in memory:", process.env.GLOT_TOKEN);
+
 // 3. Hardened CORS Configuration
-// Required for authentication headers to pass between different Render domains
 app.use(
   cors({
-    origin: "https://remote-interview-platform-1-xh21.onrender.com", // Your specific frontend URL
+    origin: ["https://remote-interview-platform-1-xh21.onrender.com", "http://localhost:5173"], 
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// --- NEW: Code Execution Route (Glot.io Bridge) ---
+app.post("/api/execute", async (req, res) => {
+  const { language, code } = req.body;
+  const GLOT_TOKEN = process.env.VITE_GLOT_TOKEN; 
+
+  if (!language || !code) {
+    return res.status(400).json({ success: false, error: "Language and code are required." });
+  }
+
+  try {
+    const response = await axios.post(
+      `https://glot.io/api/run/${language.toLowerCase()}/latest`,
+      {
+        files: [
+          {
+            name: language.toLowerCase() === "java" ? "Main.java" : "main", 
+            content: code,
+          },
+        ],
+      },
+      {
+        headers: {
+          Authorization: "Token " + process.env.GLOT_TOKEN,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    res.json({
+      success: response.data.stderr === "" && response.data.error === "",
+      output: response.data.stdout,
+      error: response.data.stderr || response.data.error,
+    });
+  } catch (error) {
+    console.error("Glot execution error:", error.response?.data || error.message);
+    res.status(500).json({ 
+      success: false, 
+      error: error.response?.data?.message || "Internal server error during code execution." 
+    });
+  }
+});
+
 // 4. API Routes
 app.use("/api/inngest", serve({ client: inngest, functions }));
-app.use("/api/webhooks", clerkWebhook); // Handles Clerk user sync logic
+app.use("/api/webhooks", clerkWebhook); 
 app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoutes);
 
-// 5. Basic Health & Root Routes
+// 5. Basic Health & Root Routes (The 80 lines you wanted back!)
 app.get("/", (req, res) => {
   res.send(`
     <!DOCTYPE html>
@@ -175,7 +220,7 @@ const startServer = async () => {
     });
   } catch (error) {
     console.error("💥 Failed to start server:", error.message);
-    process.exit(1); // Exit if DB connection fails
+    process.exit(1); 
   }
 };
 
