@@ -12,16 +12,18 @@
   "type": "module",
   "description": "",
   "dependencies": {
-    "@clerk/express": "^1.7.41",
+    "@clerk/express": "^1.7.83",
     "@stream-io/node-sdk": "^0.7.12",
-    "axios": "^1.13.6",
+    "axios": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
-    "inngest": "^3.44.3",
+    "inngest": "^4.21.0",
     "mongodb": "^4.17.2",
-    "mongoose": "^8.19.1",
-    "stream-chat": "^9.24.0"
+    "mongoose": "^8.24.4",
+    "protobufjs": "^7.6.6",
+    "stream-chat": "^9.24.0",
+    "ws": "^8.22.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

@@ -33,7 +33,7 @@ function ProblemPage() {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/problems");
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/problems`);
         if (res.data.success) setAllProblems(res.data.data);
       } catch (err) {
         console.error("Failed to load problems list:", err);
@@ -48,7 +48,7 @@ function ProblemPage() {
       if (!id) return;
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:8080/api/problems/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/problems/${id}`);
         const data = res.data.data;
         setProblem(data);
         

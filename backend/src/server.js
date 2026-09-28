@@ -24,8 +24,6 @@ app.use(clerkMiddleware());
 app.use(express.json());
 
 
-console.log("Current Token in memory:", process.env.GLOT_TOKEN);
-
 // 3. Hardened CORS Configuration
 const allowedOrigins = [
   "http://localhost:5173", // Local development
@@ -105,8 +103,7 @@ app.post("/api/execute", async (req, res) => {
       error: "The code runner encountered an internal error.",
     });
   }
-  console.log("Creating session:", req.body);
-  res.status(201).json({ success: true, roomId: "some-unique-id" });
+  
 });
 
 // 4. API Routes

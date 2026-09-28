@@ -50,7 +50,7 @@ function SessionPage() {
       // We look up the problem based on the ID stored in the session
       if (session?.problemId) {
         try {
-          const res = await axios.get(`http://localhost:8080/api/problems/${session.problemId}`);
+          const res = await axios.get(`${import.meta.env.VITE_API_URL}/problems/${session.problemId}`);
           if (res.data.success) {
             setProblemData(res.data.data);
           }
