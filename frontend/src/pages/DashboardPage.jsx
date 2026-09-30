@@ -38,8 +38,8 @@ function DashboardPage() {
     );
   };
 
-  const activeSessions = activeSessionsData?.sessions || [];
-  const recentSessions = recentSessionsData?.sessions || [];
+  const activeSessions = activeSessionsData?.data || [];
+const recentSessions = recentSessionsData?.data || [];
 
   const isUserInSession = (session) => {
     if (!user.id) return false;
