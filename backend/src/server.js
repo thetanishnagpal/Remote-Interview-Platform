@@ -61,7 +61,7 @@ app.post("/api/execute", async (req, res) => {
 
   try {
     const response = await axios.post(
-      `https://glot.io/api/run/${language.toLowerCase()}/latest`,
+      `https://run.glot.io/languages/${language.toLowerCase()}/latest`,
       {
         files: [
           {
