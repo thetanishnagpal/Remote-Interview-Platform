@@ -25,10 +25,11 @@ function DashboardPage() {
     if (!roomConfig.problem || !roomConfig.difficulty) return;
 
     createSessionMutation.mutate(
-      {
-        problem: roomConfig.problem,
-        difficulty: roomConfig.difficulty.toLowerCase(),
-      },
+  {
+    problem: roomConfig.problem,
+    problemId: roomConfig.problemId,
+    difficulty: roomConfig.difficulty.toLowerCase(),
+  },
       {
         onSuccess: (data) => {
           setShowCreateModal(false);
@@ -39,7 +40,7 @@ function DashboardPage() {
   };
 
   const activeSessions = activeSessionsData?.data || [];
-const recentSessions = recentSessionsData?.data || [];
+  const recentSessions = recentSessionsData?.data || [];
 
   const isUserInSession = (session) => {
     if (!user.id) return false;

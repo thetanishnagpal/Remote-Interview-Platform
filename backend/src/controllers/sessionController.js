@@ -3,19 +3,19 @@ import Session from '../models/Session.js';
 
 export async function createSession(req, res) {
     try {
-        const { problem, difficulty } = req.body;
+        const { problem, problemId, difficulty } = req.body;
         const userId = req.user._id;
         const clerkId = req.user.clerkId;
 
-        if (!problem || !difficulty) {
-            return res.status(400).json({ message: "Problem and difficulty are required" });
+        if (!problem || !problemId || !difficulty) {
+            return res.status(400).json({ message: "Problem, problem ID, and difficulty are required" });
         }
 
         // Generate a unique call id for stream video
         const callId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
         // Create session in database
-        const session = await Session.create({ problem, difficulty, host: userId, callId });
+        const session = await Session.create({ problem, problemId, difficulty, host: userId, callId });
 
         // Create stream video call
         await streamClient.video.call("default", callId).getOrCreate({
