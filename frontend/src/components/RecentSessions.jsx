@@ -1,8 +1,11 @@
 import { Code2, Clock, Users, Trophy, Loader } from "lucide-react";
 import { getDifficultyBadgeClass } from "../lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
 
 function RecentSessions({ sessions, isLoading }) {
+  const [showAll, setShowAll] = useState(false);
+
   return (
     <div className="card bg-base-100 border-2 border-accent/20 hover:border-accent/30 mt-8">
       <div className="card-body">
@@ -19,7 +22,7 @@ function RecentSessions({ sessions, isLoading }) {
               <Loader className="w-10 h-10 animate-spin text-primary" />
             </div>
           ) : sessions.length > 0 ? (
-            sessions.map((session) => (
+            sessions.slice(0, showAll ? sessions.length : 6).map((session) => (
               <div
                 key={session._id}
                 className={`card relative ${
@@ -95,6 +98,17 @@ function RecentSessions({ sessions, isLoading }) {
             </div>
           )}
         </div>
+
+        {sessions.length > 6 && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="btn btn-primary"
+            >
+              {showAll ? "Show Less" : "View All"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
