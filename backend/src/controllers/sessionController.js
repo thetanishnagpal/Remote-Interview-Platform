@@ -158,26 +158,32 @@ export async function endSession(req, res) {
             return res.status(400).json({ message: "Session is already completed" });
         }
 
-        // Delete stream video call
+         // Delete stream video call
         try {
             const call = streamClient.video.call("default", session.callId);
             await call.delete({ hard: true });
         } catch (error) {
             if (error?.code !== 16) {
-        throw error;
-    }
+                throw error;
+            }
 
-    console.log("Stream call already deleted, continuing...");
-}
+            console.log("Stream call already deleted, continuing...");
+        }
 
         // Delete chat channel
         const channel = chatClient.channel("messaging", session.callId);
         await channel.delete();
 
-        session.status = "completed";
-        await session.save();
+        const updatedSession = await Session.findByIdAndUpdate(
+            id,
+            { status: "completed" },
+            { new: true, runValidators: false }
+        );
 
-        res.status(200).json({ message: "Session ended successfully", session });
+        res.status(200).json({
+            message: "Session ended successfully",
+            session: updatedSession
+        });
     } catch (error) {
         console.error("Error ending session:", error.message);
         res.status(500).json({ message: "Failed to end session" });
