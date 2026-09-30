@@ -61,22 +61,17 @@ app.post("/api/execute", async (req, res) => {
 
   try {
     const response = await axios.post(
-      `https://run.glot.io/languages/${language.toLowerCase()}/latest`,
-      {
-        files: [
-          {
-            name: language.toLowerCase() === "java" ? "Main.java" : "main",
-            content: finalCode,
-          },
-        ],
-      },
-      {
-        headers: {
-          Authorization: "Token " + GLOT_TOKEN,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  "https://runlet.codealong.live/execute",
+  {
+    language: language.toLowerCase(),
+    code: finalCode,
+  },
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }
+);
 
     const stdout = response.data.stdout || "";
     const stderr = response.data.stderr || response.data.error || "";
