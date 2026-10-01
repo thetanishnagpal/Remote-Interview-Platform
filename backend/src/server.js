@@ -3,6 +3,12 @@ import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
 import axios from "axios"; 
+import dns from "dns";
+
+dotenv.config();
+
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 import { serve } from "inngest/express";
 import { clerkMiddleware } from '@clerk/express';
 
@@ -12,8 +18,6 @@ import chatRoutes from "./routes/chatRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
 import clerkWebhook from "./routes/clerkWebhook.js";
 import { PROBLEMS } from "./data/problems.js";
-
-dotenv.config();
 
 const app = express();
 

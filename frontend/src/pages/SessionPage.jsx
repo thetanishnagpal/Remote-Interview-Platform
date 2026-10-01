@@ -244,7 +244,12 @@ function SessionPage() {
                   </Panel>
                   <PanelResizeHandle className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
                   <Panel defaultSize={30} minSize={15}>
-                    <OutputPanel output={output} />
+                    <OutputPanel 
+                      output={output?.output}
+                      error={output?.error}
+                      testResults={output?.testResults}
+                      isRunning={isRunning}
+                    />                    
                   </Panel>
                 </PanelGroup>
               </Panel>
