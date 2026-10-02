@@ -65,12 +65,29 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
     if (session && !loadingSession) initCall();
 
     // cleanup - performance reasons
-    return () => {
-      // iife
+      return () => {
       (async () => {
         try {
-          if (videoCall) await videoCall.leave();
-          if (chatClientInstance) await chatClientInstance.disconnectUser();
+          if (videoCall) {
+            try {
+              await videoCall.leave();
+            } catch (error) {
+              if (!error?.message?.includes("already been left")) {
+                console.error("Video cleanup error:", error);
+              }
+            }
+          }
+        
+          if (chatClientInstance) {
+            try {
+              await chatClientInstance.disconnectUser();
+            } catch (error) {
+              if (!error?.message?.includes("already disconnected")) {
+                console.error("Chat cleanup error:", error);
+              }
+            }
+          }
+        
           await disconnectStreamClient();
         } catch (error) {
           console.error("Cleanup error:", error);
