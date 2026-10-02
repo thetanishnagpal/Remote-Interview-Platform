@@ -58,7 +58,9 @@ export const PROBLEMS = {
     testRunner: {
       javascript: `\nconsole.log("CASE_0:"+(isPalindrome("A man, a plan, a canal: Panama")===true?"PASS":"FAIL"));\nconsole.log("CASE_1:"+(isPalindrome("race a car")===false?"PASS":"FAIL"));`,
       python: `\nprint(f"CASE_0:{'PASS' if isPalindrome('A man, a plan, a canal: Panama')==True else 'FAIL'}")\nprint(f"CASE_1:{'PASS' if isPalindrome('race a car')==False else 'FAIL'}")`,
-      java: `\npublic class Main {\n  public static void main(String[] args) {\n    System.out.println("CASE_0:"+(Solution.isPalindrome("A man, a plan, a canal: Panama")?"PASS":"FAIL"));\n    System.out.println("CASE_1:"+(Solution.isPalindrome("race a car")==false?"PASS":"FAIL"));\n  }\n}`
+      java: `
+System.out.println("CASE_0:"+(Solution.isPalindrome("A man, a plan, a canal: Panama")?"PASS":"FAIL"));
+System.out.println("CASE_1:"+(Solution.isPalindrome("race a car")==false?"PASS":"FAIL"));`
     }
   },
 

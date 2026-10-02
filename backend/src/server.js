@@ -61,7 +61,21 @@ app.post("/api/execute", async (req, res) => {
   }
 
   // 1. Wrap user code with the hidden test runner
-  const finalCode = `${code}\n${problem.testRunner[language.toLowerCase()]}`;
+  const lang = language.toLowerCase();
+
+  let finalCode;
+
+  if (lang === "java") {
+    const javaRunner = problem.testRunner.java;
+
+    if (javaRunner.includes("class Main")) {
+      finalCode = `${code}\n${javaRunner}`;
+    } else {
+      finalCode = `${code}\npublic class Main { public static void main(String[] args) { ${javaRunner} } }`;
+    }
+  } else {
+    finalCode = `${code}\n${problem.testRunner[lang]}`;
+  }
 
   try {
     const response = await axios.post(
