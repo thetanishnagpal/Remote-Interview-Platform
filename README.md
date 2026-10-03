@@ -600,16 +600,22 @@ Production environment variables should be configured through the deployment pla
 
 ---
 
-## Screenshots
+## 📸 Screenshots
 
-Screenshots and demo images can be added here to showcase:
+### Landing Page
+![Landing Page](./screenshots/Landing_page.png)
 
-- Landing page
-- Dashboard
-- Problem browser
-- Interview session
-- Code execution results
-- Video and chat interface
+### Dashboard
+![Dashboard](./screenshots/Dashboard.png)
+
+### Problems
+![Problems](./screenshots/PROBLEMS_PAGE.png)
+
+### Live Interview Session
+![Live Session](./screenshots/Live_session.png)
+
+### Code Execution
+![Code Execution](./screenshots/Code_Execution.png)
 
 ---
 
